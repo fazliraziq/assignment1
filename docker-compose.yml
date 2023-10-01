@@ -1,0 +1,36 @@
+version: '3.3'
+
+services:
+  node-dev:
+    image: node:18-alpine
+    container_name: node
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - '3001:3000'
+  working_dir: /usr/src/app
+  command:
+    - npm run test
+    - npm build
+
+  sql:
+    image: mysql:latest
+    container_name: sql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 'user123'
+      MYSQL_DATABASE: order_book
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./sql:/var/lib/mysql
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./redis:/data/redis
